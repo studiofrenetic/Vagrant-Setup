@@ -1,8 +1,18 @@
 #!/usr/bin/env bash
 
-# CONFIGURATION VARIABLES
-MYSQL_PASSWORD='root'
 LARAVEL_PROJECT=false
+LARAVEL_ENV="local"
+MYSQL_PASSWORD="root"
+MYSQL_DATABASE="vagrant"
+
+while getopts l:e:p:d: option; do
+	case "${option}" in
+		l) LARAVEL_PROJECT=${OPTARG};;
+		e) LARAVEL_ENV=${OPTARG};;
+		p) MYSQL_PASSWORD=${OPTARG};;
+		d) MYSQL_DATABASE=${OPTARG};;
+	esac
+done
 
 echo "--- Good morning, master. Let's get to work. Installing now. ---"
 
@@ -22,8 +32,8 @@ sudo add-apt-repository -y ppa:ondrej/php5
 echo "--- Updating packages list ---"
 sudo apt-get update
 
-echo "--- Installing PHP-specific packages ---"
-sudo apt-get install -y php5-fpm php5-cli nginx php5-curl php5-gd php5-imagick php5-mcrypt mysql-server mysql-client git-core
+echo "--- Installing PHP-specific packages -"
+sudo apt-get install -y nginx php5-fpm php5-cli php5-curl php5-gd php5-imagick php5-mcrypt php5-mysql mysql-server mysql-client git-core
 
 echo "--- Installing and configuring Xdebug ---"
 sudo apt-get install -y php5-xdebug
@@ -40,7 +50,7 @@ sudo ln -fs /vagrant /var/www
 
 
 echo "--- What developer codes without errors turned on? Not you, master. ---"
-sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php5/fpm/php.ini
+sed -i "s/error_reporting = .*/error_exitlreporting = E_ALL/" /etc/php5/fpm/php.ini
 sed -i "s/display_errors = .*/display_errors = On/" /etc/php5/fpm/php.ini
 
 echo "--- Change Nginx to listen to php5 socket ---"
@@ -54,17 +64,18 @@ echo "--- Restart Nginx && PHP5-FPM ---"
 sudo service php5-fpm restart
 sudo service nginx restart
 
+echo "--- Create database. ---"
+mysql --user=root --password="${MYSQL_PASSWORD}" -Bse "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE} CHARACTER SET utf8 COLLATE utf8_unicode_ci"
+
 echo "--- Composer is the future. But you knew that, did you master? Nice job. ---"
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 
 if $LARAVEL_PROJECT; then
-echo "--- Lets make sure the app storage directory is writable. ---"
-chmod -R o+w /vagrant/app/storage
-echo "--- Migrate the database for Laravel project ---"
-php /vagrant/artisan migrate --env=local
-echo "--- Now lets run the db:seed command! ---"
-php /vagrant/artisan db:seed --env=local
+	echo "--- Migrate the database for Laravel project ---"
+	php /vagrant/artisan migrate --env=$LARAVEL_ENV
+	echo "--- Now lets run the db:seed command! ---"
+	php /vagrant/artisan db:seed --env=$LARAVEL_ENV
 fi
 
 echo "--- All set to go! Would you like to play a game? ---"

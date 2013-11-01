@@ -1,5 +1,7 @@
 server {
 
+        sendfile off;
+
         server_name _;
 
         root /var/www/public;
