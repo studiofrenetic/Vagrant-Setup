@@ -43,7 +43,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         if LARAVEL_PROJECT
             shell.args = ["-l true", "-e", LARAVEL_ENV, "-p", MYSQL_PASSWORD, "-d", MYSQL_DATABASE].join(" ")
         else
-
+            shell.args = ["-p", MYSQL_PASSWORD, "-d", MYSQL_DATABASE].join(" ")
         end
     end
 
