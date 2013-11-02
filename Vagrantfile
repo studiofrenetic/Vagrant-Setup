@@ -5,9 +5,13 @@
 # CONFIGURATION
 #### ----------------------------------------
 LARAVEL_PROJECT = true
+IP_ADDRESS = 172.22.22.22
 LARAVEL_ENV = "local"
+PROJECT_NAME = "laravel"
+HOSTNAME = PROJECT_NAME+".dev"
+HOSTNAME_ALIASES = ["www."+HOSTNAME]
 MYSQL_PASSWORD = "root"
-MYSQL_DATABASE = "vagrant"
+MYSQL_DATABASE = PROJECT_NAME
 #### ----------------------------------------
 
 ##################################################################
@@ -24,7 +28,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     config.vm.network :forwarded_port, guest: 80, host: 8080
 
-    config.vm.synced_folder "./", "/vagrant", id: "vagrant-root", :owner => "vagrant", :group => "www-data"
+    config.vm.synced_folder "./", "/vagrant", id: "vagrant-root", :owner => "vagrant", :group => "www-data", :nfs => true
+
+    config.vm.define PROJECT_NAME do |node|
+        node.vm.hostname = HOSTNAME
+        node.vm.network :private_network, ip: IP_ADDRESS
+        node.hostsupdater.aliases = HOSTNAME_ALIASES
+    end
 
     if LARAVEL_PROJECT
         config.vm.synced_folder "./app/storage", "/vagrant/app/storage", id: "vagrant-storage",
