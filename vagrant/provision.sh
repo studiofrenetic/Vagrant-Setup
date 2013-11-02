@@ -71,6 +71,11 @@ echo "--- Composer is the future. But you knew that, did you master? Nice job. -
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 
+echo "--- Installing phpunit globally ---"
+composer global require 'phpunit/phpunit=3.7.*'
+echo "export PATH=$PATH:~/.composer/vendor/bin/" >> ~/.profile
+. ~/.profile
+
 if $LARAVEL_PROJECT; then
 	echo "--- Migrate the database for Laravel project ---"
 	php /vagrant/artisan migrate --env=$LARAVEL_ENV
