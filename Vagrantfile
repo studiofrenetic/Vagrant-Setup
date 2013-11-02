@@ -5,7 +5,7 @@
 # CONFIGURATION
 #### ----------------------------------------
 LARAVEL_PROJECT = true
-IP_ADDRESS = 172.22.22.22
+IP_ADDRESS = "172.22.22.22"
 LARAVEL_ENV = "local"
 PROJECT_NAME = "laravel"
 HOSTNAME = PROJECT_NAME+".dev"
