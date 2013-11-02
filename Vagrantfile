@@ -28,7 +28,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     config.vm.network :forwarded_port, guest: 80, host: 8080
 
-    config.vm.synced_folder "./", "/vagrant", id: "vagrant-root", :owner => "vagrant", :group => "www-data", :nfs => true
+    config.vm.synced_folder "./", "/vagrant", id: "vagrant-root", :nfs => true
 
     config.vm.define PROJECT_NAME do |node|
         node.vm.hostname = HOSTNAME
@@ -38,14 +38,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     if LARAVEL_PROJECT
         config.vm.synced_folder "./app/storage", "/vagrant/app/storage", id: "vagrant-storage",
-            :owner => "vagrant",
-            :group => "www-data",
-            :mount_options => ["dmode=775","fmode=664"]
+            :mount_options => ["dmode=775","fmode=664"],
+            :nfs => true
 
         config.vm.synced_folder "./public", "/vagrant/public", id: "vagrant-public",
-            :owner => "vagrant",
-            :group => "www-data",
-            :mount_options => ["dmode=775","fmode=664"]
+            :mount_options => ["dmode=775","fmode=664"],
+            :nfs => true
     end
 
     config.vm.provision :shell do |shell|
