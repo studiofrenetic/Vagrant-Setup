@@ -72,9 +72,9 @@ curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 
 echo "--- Installing phpunit globally ---"
-composer global require 'phpunit/phpunit=3.7.*'
-echo "export PATH=$PATH:~/.composer/vendor/bin/" >> ~/.profile
-. ~/.profile
+wget https://phar.phpunit.de/phpunit.phar
+chmod +x phpunit.phar
+sudo mv phpunit.phar /usr/local/bin/phpunit
 
 if $LARAVEL_PROJECT; then
 	echo "--- Migrate the database for Laravel project ---"
